@@ -97,7 +97,7 @@
 (name *)	phone booth
 
 %% sure, why not
-(dict *)	p#0n3 b00th
+(dict *)	p\#0n3 b00th
 
 (* is #in #townsquare)
 (edible *)
@@ -121,7 +121,7 @@
 
 	(else)
 		It looks like any other normal phone booth you might see in any other
-		normal city, but this one has the words "PHONE BOOTH" scratched out and "P#0N3
+		normal city, but this one has the words "PHONE BOOTH" scratched out and "P\#0N3
 		B00TH" instead. (line)
 		Someone has also added a smiley face under the two 00s in "B00TH".
 	(endif)
