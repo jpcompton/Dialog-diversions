@@ -1,0 +1,309 @@
+(story title)	PICK UP THE PHONE BOOTH AND DIE-ALOG
+(story author)	jcompton
+(story noun)	a NyQuil nightmare by R. Noyes, unnecessarily ported
+
+(story ifid)
+		%% This is the IFID for the Dialog port of PUTPBAD:
+		462BA0FE-364F-4DB4-9ABB-F7373FCC6F6E
+
+%% Things which are different than the Inform 5 original:
+
+%% It looks like Spatch created a custom message to prevent movement out of the
+%% Square but it was never wired up. It's wired up here.
+
+%% You can refer to the phone booth by its graffiti'd names.
+
+%% >pray responses were truly random in the original, we use Dialog's
+%% default "no back-to-back repeats" rule here.
+
+%% Spacing! Dialog treats spaces >1 after a full stop as bugs rather than
+%% features, so Spatch's original stylings are eaten by the compiler.
+
+%% Various generic library responses which are different in Dialog,
+%% but whose flavor didn't seem to make a difference to the PUTPBAD experience.
+
+%% Status line is cosmetically different.
+
+%% It's about a kajillion times slower but you'll only notice on older hardware.
+
+%% At the bottom of the source are things I know of which are not yet implemented.
+%% Fixes, amendments, etc. are welcome. - JC
+
+(scoring enabled)
+(maximum score 100)
+
+%% there's probably a much much smarter way to do this...
+(global variable (victory lap 0))
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+(intro)
+		(line)
+		(par)
+		(line)
+		And so you were taken from this place to another place, where you had
+		absolutely no damn idea what it is you're supposed to be doing.  It's OK,
+		you'll be all right.  Just don't pick up the phone booth, or else you'll die.
+
+		(banner)
+		(enter #townsquare)
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+#townsquare
+
+(room *)
+(singleton *)
+(name *)	The Town Square
+
+(look *)
+
+		You are standing in the middle of a pretty town square in the center of
+		a nondescript New England town.  Like most any other nondescript New England
+		towns, there's not much to see or do here, but maybe you'll find something
+		amusing and enjoyable to do.
+
+		(notice #booth)
+
+%% Found in the disassembly but it didn't actually fire in the original?
+(prevent [leave $ $ ])
+
+		You are confined to the Town Square only.  What a fun laff riot this
+        damn game turned out to be, eh?
+
+%% there's gotta be a more compact way, right?
+(on every tick in #townsquare)
+	(booth has been pushed)
+	(victory lap $Victory)
+	($Victory plus 1 into $NewVictory)
+	(now) (victory lap $NewVictory)
+	(if) ($NewVictory > 1) (then)
+	(par)
+	A familiar sound now comes out of the phone's receiver, lying pathetically on
+	the ground.  You glare in satisfaction as you to the repetitive
+	BEEPBEEPBEEPBEEP sound and then as the recorded voice of the Operator, the
+	person you're going to marry someday, comes on and says...
+	(par)
+	"... if you would like to make a call, please hang up and try again.  If you
+	would like to make a call, please hang up and try again ..."
+	(game over {You have won})
+	(endif)
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+#booth
+
+(name *)	phone booth
+
+%% sure, why not
+(dict *)	p#0n3 b00th
+
+(* is #in #townsquare)
+(edible *)
+(openable *)
+(item *)
+
+(appearance * $ $)
+	(if) (booth has been pushed) (then)
+		A fallen phone booth lies, crumpled, on the ground.
+	(else)
+		A shiny metal phone booth sits in the center of the square.
+	(endif)
+    
+(descr *)
+
+	(if) (booth has been pushed) (then)
+
+		A crushed, pathetic hulk of metal and glass that once was a phone booth.
+		No longer will it mock you silently with its glassy stare and weird writing. 
+		No longer will you need to push it over.
+
+	(else)
+		It looks like any other normal phone booth you might see in any other
+		normal city, but this one has the words "PHONE BOOTH" scratched out and "P#0N3
+		B00TH" instead. (line)
+		Someone has also added a smiley face under the two 00s in "B00TH".
+	(endif)
+
+(perform [push *])
+	(if) (booth has been pushed) (then)
+	You've already pushed it over, dumbass.
+	(else)
+	You give the damn phone booth a mighty push and watch
+	as, in a brilliant slow-motion display, it topples over, glass sides shattering
+	onto the lawn, welded door crumpling under the impact, the phone itself flying
+	off the hook and landing pathetically in a mass of metal and plastic. You have
+	the distinct feeling that the booth will bother you no more.
+	(increase score by 100)
+	(now) (booth has been pushed)
+		  
+	(endif)
+
+(prevent [open *])
+	(if) (booth has been pushed) (then)
+	The act of pushing the phone booth over has opened it up, in a sense.
+	(else)
+	The booth is welded shut.  Sucks to be you.
+	(endif)
+
+(prevent [close *])
+	(if) (booth has been pushed) (then)
+	The door is all bent, there's no way you can close it now, even
+	if you wanted to.
+	(else)
+	It's already closed.  Duh.
+	(endif)
+
+(prevent [take *])
+	(if) (booth has been pushed) (then)
+	You've pushed it over.  You've won.  No need to pick it
+	up now.
+	(else)
+	You grunt with all your might and heave the phone booth
+	onto your shoulders.  For a moment or two it looks as if you're not going to be
+	able to lift it, but heroically you finally lift it high in the air!  Seconds
+	later, however, you topple underneath the weight, and the booth crushes you
+	fatally.  Geez!  Didn't I tell you not to pick up the phone booth?!  Isn't the
+	name of this very game "Pick Up The Phone Booth and Die"?!  Man, you're dense. 
+	No big loss to humanity, I tell ya.
+	(game over {You have died})
+	(endif)
+
+(prevent [pull *])
+	(if) (booth has been pushed) (then)
+	You've no need to pull it now that it's fallen over.
+	(else)
+	There are two stupid things in this game you can do.
+	The first one is picking up the phone booth, as witnessed by the title of the
+	game, "Pick Up The Phone Booth and Die".  But only second in stupidity is
+	pulling the phone booth onto yourself, which you've seemingly done here.  After
+	a few seconds of rocking it back and forth, you pull it down upon yourself and
+	immediately get squished to death underneath a vengeful phone booth.  Dumbass.
+	(game over {You have died})
+	(endif)
+
+
+(perform [attack *])
+	Sure, that looks non suspicious, a psychopath attacking
+	a phone booth.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+#player
+
+(current player *)
+(* is #in #townsquare)
+
+
+
+%% Redo the score routine from stdlib so we have score ranks
+(perform [score])
+	(scoring enabled)
+	(current score $Score)
+	(maximum score $Max)
+	You currently have $Score
+	(if) ($Score = 1) (then) point (else) points (endif)
+	(if) ($Max) (then)
+		out of a maximum of $Max
+	(endif)
+		giving you the rank of
+		(if) ($Score < $Max ) (then)
+	       total and utter loser, squished to death by a damn phone booth.
+	(else) phone booth pusher-over extraordinare!
+	(endif)
+
+%% Redo game over from stdlib so we have score ranks
+%% Game over
+
+(game over)
+	(par)
+	(game over status bar)
+	(if) (scoring enabled) (then)
+		(current score $Score)
+		(maximum score $Max)
+		Game over. You scored $Score
+		(if) ($Score = 1) (then) point (else) points (endif)
+		(if) ($Max) (then)
+			out of $Max
+		(endif)
+				giving you the rank of
+		(if) ($Score < $Max ) (then)
+	       total and utter loser, squished to death by a damn phone booth.
+		(else) phone booth pusher-over extraordinare!
+		(endif)
+
+		(par)
+	(endif)
+	*(repeat forever) (game over menu) (fail)
+
+
+(perform [pray])
+	(select)
+	Your prayer is sent. (par)
+
+	Some deity misunderstands you and sends down to you five chickens and a cow,
+	all of which immediately run away.
+	(or)
+	Let's see... Now I lay me down to sleep, leave a message at the beep.  Amen.
+	(or)
+	Ok... rub-a-dub-dub, thanks for the grub!  Yay God!  Amen!
+	(or)
+	Your prayer is sent and received through the proper
+	channels, noted and cataloged, stamped with the date of which it was received,
+	sorted in order of priority and then of request, re-routed several times to
+	different departments, and by the time it reaches The Big Guy Upstairs\(TM\)
+	you've already gone and solved your own problem yourself. (par)
+	No, this isn't a remake of "Bureaucracy".
+	(or)
+	Nothing practical results from your prayer.
+	(at random)
+
+%% Below this line are verbs which either don't appear in the Dialog stdlib, or
+%% which have thematic responses that we should replicate.
+
+(understand [sorry])
+	(perform [sorry])
+	Oh, don't apologise.
+
+(understand [damn])
+	(perform [damn])
+	You're playing this game, you're damned already.
+
+(understand [fuck])
+	(perform [fuck])
+	Not even on your birthday.
+
+(understand [shit])
+	(perform [shit])
+	We're not here to discuss your diet.
+
+(perform [wake up])
+	The dreadful truth is, this is not a dream.
+
+(perform [think])
+	What a good idea.
+
+(perform [kiss *])
+	If you think that'll help.
+
+(perform [feel *])
+	If you think that'll help.
+
+(understand [burn | $Words] as [burn $Object])
+	*(understand $Words as non-all object $Object)
+(perform [burn $Object])
+	Sure, and set the smoke detectors off.
+
+%% Handle "Pick it up before you put it in" for >put booth in booth etc. ?
+
+%% Handle "It's so crumpled up on the ground, nothing can fit
+%% inside it now.  Nyah!" ? That message is in the original disasm but I'm not
+%% sure it could actually be triggered
+
+%% Handle FULL score breakdown "for pushing the phone booth over and deadifying it." ?
+
+%% Find out what this is: #4a seems to be "eat" but "eat booth" already works
+%% as original.
+%% L0005: JE              G29,#4a [FALSE] L0006
+%%       PRINT_RET       "Uhm, yeah.  Sure.  Whatever."
